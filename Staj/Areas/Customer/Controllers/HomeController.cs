@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using StajWeb.Models;
 using System.Diagnostics;
 
-namespace Staj.Controllers
+namespace Staj.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
