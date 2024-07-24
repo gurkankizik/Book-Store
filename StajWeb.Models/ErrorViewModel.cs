@@ -1,4 +1,4 @@
-namespace Staj.Models
+namespace StajWeb.Models
 {
     public class ErrorViewModel
     {

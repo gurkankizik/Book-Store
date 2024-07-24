@@ -18,9 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Staj.Utility\Staj.Utility.csproj" />
-    <ProjectReference Include="..\StajWeb.DataAccess\StajWeb.DataAccess.csproj" />
-    <ProjectReference Include="..\StajWeb.Models\StajWeb.Models.csproj" />
+    <ProjectReference Include="..\StajBook.DataAccess\StajBookDataAccess.csproj" />
+    <ProjectReference Include="..\StajBook.Models\StajBook.Models.csproj" />
+    <ProjectReference Include="..\StajBook.Utility\StajBook.Utility.csproj" />
   </ItemGroup>
 
 </Project>

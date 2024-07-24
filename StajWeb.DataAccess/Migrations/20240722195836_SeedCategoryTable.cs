@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Staj.Migrations
+namespace StajWeb.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class SeedCategoryTable : Migration

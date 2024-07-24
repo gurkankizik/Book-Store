@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Staj.Models
+namespace StajWeb.Models
 {
     public class Category
     {

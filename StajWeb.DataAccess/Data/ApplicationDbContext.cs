@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Staj.Models;
-
-namespace Staj.Data
+using StajWeb.Models;
+namespace StajWeb.DataAccess.Data
 {
     public class ApplicationDbContext : DbContext
     {

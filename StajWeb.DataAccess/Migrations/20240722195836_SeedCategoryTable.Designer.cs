@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Staj.Data;
+using StajWeb.DataAccess.Data;
 
 #nullable disable
 
-namespace Staj.Migrations
+namespace StajWeb.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20240722195836_SeedCategoryTable")]

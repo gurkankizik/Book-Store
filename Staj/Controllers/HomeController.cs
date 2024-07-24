@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Staj.Models;
+using StajWeb.Models;
 using System.Diagnostics;
 
 namespace Staj.Controllers
