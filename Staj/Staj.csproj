@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Staj.Utility\Staj.Utility.csproj" />
+    <ProjectReference Include="..\Staj.Utility\StajWeb.Utility.csproj" />
     <ProjectReference Include="..\StajWeb.DataAccess\StajWeb.DataAccess.csproj" />
     <ProjectReference Include="..\StajWeb.Models\StajWeb.Models.csproj" />
   </ItemGroup>

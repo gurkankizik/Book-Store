@@ -1,4 +1,4 @@
-﻿namespace Staj.Utility
+﻿namespace StajWeb.Utility
 {
     public static class SD
     {

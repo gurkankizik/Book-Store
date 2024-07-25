@@ -16,9 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StajWeb.Models", "StajWeb.M
 		{25545441-772F-4FFB-A092-5AA3B65AC923} = {25545441-772F-4FFB-A092-5AA3B65AC923}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Staj.Utility", "Staj.Utility\Staj.Utility.csproj", "{D8A68ADC-92A1-4DF8-AE02-DDD469A1C841}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StajWeb.Utilty", "StajWeb.Utilty\StajWeb.Utilty.csproj", "{A4D6EB3E-0700-4A7A-B3E0-568C9320B62A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StajWeb.Utility", "Staj.Utility\StajWeb.Utility.csproj", "{D8A68ADC-92A1-4DF8-AE02-DDD469A1C841}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,10 +40,6 @@ Global
 		{D8A68ADC-92A1-4DF8-AE02-DDD469A1C841}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8A68ADC-92A1-4DF8-AE02-DDD469A1C841}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8A68ADC-92A1-4DF8-AE02-DDD469A1C841}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4D6EB3E-0700-4A7A-B3E0-568C9320B62A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4D6EB3E-0700-4A7A-B3E0-568C9320B62A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4D6EB3E-0700-4A7A-B3E0-568C9320B62A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4D6EB3E-0700-4A7A-B3E0-568C9320B62A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
