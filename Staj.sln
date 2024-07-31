@@ -12,11 +12,15 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StajWeb.DataAccess", "StajWeb.DataAccess\StajWeb.DataAccess.csproj", "{25545441-772F-4FFB-A092-5AA3B65AC923}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StajWeb.Models", "StajWeb.Models\StajWeb.Models.csproj", "{8D840690-1166-49BC-B440-D81CE965FBEA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{25545441-772F-4FFB-A092-5AA3B65AC923} = {25545441-772F-4FFB-A092-5AA3B65AC923}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StajWeb.Utility", "Staj.Utility\StajWeb.Utility.csproj", "{D8A68ADC-92A1-4DF8-AE02-DDD469A1C841}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Staj.Api", "Staj.Api\Staj.Api.csproj", "{41972DAC-A8B2-421E-9959-CD3B73A0B646}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8D840690-1166-49BC-B440-D81CE965FBEA} = {8D840690-1166-49BC-B440-D81CE965FBEA}
+		{D8A68ADC-92A1-4DF8-AE02-DDD469A1C841} = {D8A68ADC-92A1-4DF8-AE02-DDD469A1C841}
+		{E4CF34F1-8B11-453D-897D-38984AF0CE3A} = {E4CF34F1-8B11-453D-897D-38984AF0CE3A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +44,10 @@ Global
 		{D8A68ADC-92A1-4DF8-AE02-DDD469A1C841}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8A68ADC-92A1-4DF8-AE02-DDD469A1C841}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8A68ADC-92A1-4DF8-AE02-DDD469A1C841}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41972DAC-A8B2-421E-9959-CD3B73A0B646}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41972DAC-A8B2-421E-9959-CD3B73A0B646}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41972DAC-A8B2-421E-9959-CD3B73A0B646}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41972DAC-A8B2-421E-9959-CD3B73A0B646}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

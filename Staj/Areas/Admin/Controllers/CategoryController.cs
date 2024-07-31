@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Staj.Model;
 using StajWeb.DataAccess.Repository.IRepository;
 using StajWeb.Models;
 using StajWeb.Utility;
+using System.Text;
 
 
 namespace Staj.Areas.Admin.Controllers
@@ -12,21 +15,45 @@ namespace Staj.Areas.Admin.Controllers
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CategoryController(IUnitOfWork UnitOfWork)
+        private readonly HttpClient _httpClient;
+        private readonly string _apiUrl = "http://localhost:5198/api/Category";
+
+
+        public CategoryController(IUnitOfWork UnitOfWork, HttpClient httpClient)
         {
             _unitOfWork = UnitOfWork;
+            _httpClient = httpClient;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
-            return View(objCategoryList);
+            var response = await _httpClient.GetAsync(_apiUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var categories = JsonConvert.DeserializeObject<List<CategoryViewModel>>(content);
+                return View(categories);
+            }
+            else
+            {
+                // Handle error response
+                //List<CategoryViewModel> objCategoryList = _unitOfWork.Category.GetAll().Select(x => new CategoryViewModel
+                //{
+                //    Id = x.Id,
+                //    Name = x.Name,
+                //    DisplayOrder = x.DisplayOrder
+                //}).ToList();
+                return View(new List<CategoryViewModel>());
+            }
+
+            //List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
+            //return View(objCategoryList);
         }
         public IActionResult Create()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Category obj)
+        public async Task<IActionResult> Create(CategoryViewModel obj)
         {
             if (obj.Name == obj.DisplayOrder.ToString())
             {
@@ -38,12 +65,22 @@ namespace Staj.Areas.Admin.Controllers
             //}
             if (ModelState.IsValid)
             {
-                _unitOfWork.Category.Add(obj);
-                _unitOfWork.Save();
-                TempData["success"] = "Category created successfully";
-                return RedirectToAction("Index");
+                var jsonContent = JsonConvert.SerializeObject(obj);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync(_apiUrl, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["success"] = "Category created successfully";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    // Handle error response
+                    ModelState.AddModelError("", "Error creating category");
+                }
             }
-            return View();
+            return View(obj);
         }
         public IActionResult Edit(int? id)
         {
@@ -59,16 +96,26 @@ namespace Staj.Areas.Admin.Controllers
             return View(categoryFromDb);
         }
         [HttpPost]
-        public IActionResult Edit(Category obj)
+        public async Task<IActionResult> Edit(CategoryViewModel obj)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.Category.Update(obj);
-                _unitOfWork.Save();
-                TempData["success"] = "Category updated successfully";
-                return RedirectToAction("Index");
+                var jsonContent = JsonConvert.SerializeObject(obj);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PutAsync($"{_apiUrl}/{obj.Id}", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["success"] = "Category updated successfully";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    // Handle error response
+                    ModelState.AddModelError("", "Error updating category");
+                }
             }
-            return View();
+            return View(obj);
         }
         public IActionResult Delete(int? id)
         {
@@ -84,19 +131,18 @@ namespace Staj.Areas.Admin.Controllers
             return View(categoryFromDb);
         }
         [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? id)
+        public async Task<IActionResult> DeletePOST(int? id)
         {
-            Category? obj = _unitOfWork.Category.Get(u => u.Id == id);
-            if (obj == null)
+            var response = await _httpClient.DeleteAsync($"{_apiUrl}/{id}");
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
-            }
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Category.Remove(obj);
-                _unitOfWork.Save();
                 TempData["success"] = "Category deleted successfully";
                 return RedirectToAction("Index");
+            }
+            else
+            {
+                // Handle error response
+                ModelState.AddModelError("", "Error deleting category");
             }
             return View();
         }

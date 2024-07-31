@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
+using Staj.Model;
 using StajWeb.DataAccess.Repository.IRepository;
 using StajWeb.Models;
 using StajWeb.Models.ViewModels;
 using StajWeb.Utility;
+using System.Text;
 
 
 namespace Staj.Areas.Admin.Controllers
@@ -15,16 +18,40 @@ namespace Staj.Areas.Admin.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ProductController(IUnitOfWork UnitOfWork, IWebHostEnvironment webHostEnvironment)
+        private readonly HttpClient _httpClient;
+        private readonly string _apiUrl = "http://localhost:5198/api/Product";
+
+        public ProductController(IUnitOfWork UnitOfWork, IWebHostEnvironment webHostEnvironment, HttpClient httpClient)
         {
             _unitOfWork = UnitOfWork;
             _webHostEnvironment = webHostEnvironment;
+            _httpClient = httpClient;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            var response = await _httpClient.GetAsync(_apiUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var products = JsonConvert.DeserializeObject<List<ProductViewModel>>(content);
+                return View(products);
+            }
+            else
+            {
+                // Handle error response
+                //List<CategoryViewModel> objCategoryList = _unitOfWork.Category.GetAll().Select(x => new CategoryViewModel
+                //{
+                //    Id = x.Id,
+                //    Name = x.Name,
+                //    DisplayOrder = x.DisplayOrder
+                //}).ToList();
+                return View(new List<ProductViewModel>());
+            }
 
-            return View(objProductList);
+
+
+            //List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            //return View(objProductList);
         }
         public IActionResult Upsert(int? id)
         {
@@ -50,7 +77,7 @@ namespace Staj.Areas.Admin.Controllers
             }
         }
         [HttpPost]
-        public IActionResult Upsert(ProductVM productVM, IFormFile? file)
+        public async Task<IActionResult> Upsert(ProductVM productVM, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -77,17 +104,46 @@ namespace Staj.Areas.Admin.Controllers
                     productVM.Product.ImgUrl = @"\images\product\" + fileName;
                 }
 
+                var jsonContent = JsonConvert.SerializeObject(productVM);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
                 if (productVM.Product.Id == 0)
                 {
-                    _unitOfWork.Product.Add(productVM.Product);
+                    var response = await _httpClient.PostAsync(_apiUrl, content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        TempData["success"] = "Product created successfully";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Error creating product: " + response.ReasonPhrase);
+                        productVM.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+                        {
+                            Text = u.Name,
+                            Value = u.Id.ToString()
+                        });
+                        return View(productVM);
+                    }
                 }
                 else
                 {
-                    _unitOfWork.Product.Update(productVM.Product);
+                    var response = await _httpClient.PutAsync($"{_apiUrl}/{productVM.Product.Id}", content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        TempData["success"] = "Product updated successfully";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Error updating product: " + response.ReasonPhrase);
+                        productVM.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+                        {
+                            Text = u.Name,
+                            Value = u.Id.ToString()
+                        });
+                        return View(productVM);
+                    }
                 }
 
-                _unitOfWork.Save();
-                TempData["success"] = "Product created successfully";
                 return RedirectToAction("Index");
             }
             else
