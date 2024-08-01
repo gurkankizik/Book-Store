@@ -9,7 +9,6 @@ using StajWeb.Models.ViewModels;
 using StajWeb.Utility;
 using System.Text;
 
-
 namespace Staj.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -47,9 +46,6 @@ namespace Staj.Areas.Admin.Controllers
                 //}).ToList();
                 return View(new List<ProductViewModel>());
             }
-
-
-
             //List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
             //return View(objProductList);
         }
