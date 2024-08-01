@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Staj.Dtos;
@@ -16,13 +17,15 @@ namespace Staj.Api.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ILogger<ProductController> _logger;
         private readonly IMapper _mapper;
+        private readonly IValidator<ProductVM> _validator;
 
-        public ProductController(ILogger<ProductController> logger, IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IMapper mapper)
+        public ProductController(ILogger<ProductController> logger, IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IMapper mapper, IValidator<ProductVM> validator)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
             _mapper = mapper;
+            _validator = validator;
         }
 
         [HttpGet]
@@ -51,7 +54,8 @@ namespace Staj.Api.Controllers
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
         public IActionResult Post([FromBody] ProductVM productVM)
         {
-            if (ModelState.IsValid)
+            var result = _validator.Validate(productVM);
+            if (result.IsValid)
             {
                 var product = _mapper.Map<Product>(productVM.Product);
                 _unitOfWork.Product.Add(product);
@@ -65,7 +69,8 @@ namespace Staj.Api.Controllers
                     Text = u.Name,
                     Value = u.Id.ToString()
                 });
-                return Ok(productVM);
+                //return Ok(productVM);
+                return BadRequest(result.Errors);
             }
         }
 
@@ -77,8 +82,8 @@ namespace Staj.Api.Controllers
             {
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            var result = _validator.Validate(productVM);
+            if (result.IsValid)
             {
                 var product = _mapper.Map<Product>(productVM.Product);
                 _unitOfWork.Product.Update(product);
@@ -92,7 +97,8 @@ namespace Staj.Api.Controllers
                     Text = u.Name,
                     Value = u.Id.ToString()
                 });
-                return Ok(productVM);
+                //return Ok(productVM);
+                return BadRequest(result.Errors);
             }
         }
 

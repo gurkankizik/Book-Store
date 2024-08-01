@@ -1,7 +1,10 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Staj.Dtos;
 using StajWeb.DataAccess.Data;
 using StajWeb.DataAccess.Repository;
 using StajWeb.DataAccess.Repository.IRepository;
+using StajWeb.Models.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +20,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+builder.Services.AddScoped<IValidator<CategoryDto>, CategoryValidator>();
+builder.Services.AddScoped<IValidator<ProductVM>, ProductValidator>();
 
 var app = builder.Build();
 

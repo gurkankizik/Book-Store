@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Staj.Dtos;
 using StajWeb.DataAccess.Repository.IRepository;
@@ -12,11 +13,13 @@ namespace Staj.Api.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IValidator<CategoryDto> _validator;
 
-        public CategoryController(IUnitOfWork UnitOfWork, IMapper mapper)
+        public CategoryController(IUnitOfWork UnitOfWork, IMapper mapper, IValidator<CategoryDto> validator)
         {
             _unitOfWork = UnitOfWork;
             _mapper = mapper;
+            _validator = validator;
         }
 
         [HttpGet]
@@ -52,32 +55,41 @@ namespace Staj.Api.Controllers
         [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
         public IActionResult Post([FromBody] CategoryDto categoryDto)
         {
-            if (ModelState.IsValid)
+            var result = _validator.Validate(categoryDto);
+
+            if (result.IsValid)
             {
                 var data = _mapper.Map<Category>(categoryDto);
                 _unitOfWork.Category.Add(data);
                 _unitOfWork.Save();
                 return Ok(data);
             }
-            return BadRequest();
+            else
+            {
+                return BadRequest(result.Errors);
+            }
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
         public IActionResult Put(int id, [FromBody] CategoryDto categoryDto)
         {
+            var result = _validator.Validate(categoryDto);
             var data = _mapper.Map<Category>(categoryDto);
             if (id != categoryDto.Id)
             {
                 return NotFound();
             }
-            if (ModelState.IsValid)
+            if (result.IsValid)
             {
                 _unitOfWork.Category.Update(data);
                 _unitOfWork.Save();
                 return Ok(data);
             }
-            return BadRequest();
+            else
+            {
+                return BadRequest(result.Errors);
+            }
         }
 
         [HttpDelete("{id}")]
