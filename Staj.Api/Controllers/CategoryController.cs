@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Staj.Model;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Staj.Dtos;
 using StajWeb.DataAccess.Repository.IRepository;
 using StajWeb.Models;
 
@@ -10,62 +11,71 @@ namespace Staj.Api.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CategoryController(IUnitOfWork UnitOfWork)
+        private readonly IMapper _mapper;
+
+        public CategoryController(IUnitOfWork UnitOfWork, IMapper mapper)
         {
             _unitOfWork = UnitOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<CategoryViewModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
         public IActionResult Get()
         {
-            List<CategoryViewModel> objCategoryList = _unitOfWork.Category.GetAll().Select(x => new CategoryViewModel
-            {
-                Id = x.Id,
-                Name = x.Name,
-                DisplayOrder = x.DisplayOrder
-            }).ToList();
-            return Ok(objCategoryList);
+            var categoryDtos = _unitOfWork.Category.GetAll();
+            var data = _mapper.Map<List<CategoryDto>>(categoryDtos);
+
+            //List<CategoryViewModel> objCategoryList = _unitOfWork.Category.GetAll().Select(x => new CategoryViewModel
+            //{
+            //    Id = x.Id,
+            //    Name = x.Name,
+            //    DisplayOrder = x.DisplayOrder
+            //}).ToList();
+            return Ok(data);
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            Category category = _unitOfWork.Category.Get(u => u.Id == id);
-            if (category == null)
+            var categoryDto = _unitOfWork.Category.Get(u => u.Id == id);
+            var data = _mapper.Map<CategoryDto>(categoryDto);
+            if (categoryDto == null)
             {
                 return NotFound();
             }
-            return Ok(category);
+            return Ok(categoryDto);
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
-        public IActionResult Post([FromBody] Category category)
+        public IActionResult Post([FromBody] CategoryDto categoryDto)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.Category.Add(category);
+                var data = _mapper.Map<Category>(categoryDto);
+                _unitOfWork.Category.Add(data);
                 _unitOfWork.Save();
-                return Ok(category);
+                return Ok(data);
             }
             return BadRequest();
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
-        public IActionResult Put(int id, [FromBody] Category category)
+        public IActionResult Put(int id, [FromBody] CategoryDto categoryDto)
         {
-            if (id != category.Id)
+            var data = _mapper.Map<Category>(categoryDto);
+            if (id != categoryDto.Id)
             {
                 return NotFound();
             }
             if (ModelState.IsValid)
             {
-                _unitOfWork.Category.Update(category);
+                _unitOfWork.Category.Update(data);
                 _unitOfWork.Save();
-                return Ok(category);
+                return Ok(data);
             }
             return BadRequest();
         }
@@ -74,14 +84,14 @@ namespace Staj.Api.Controllers
         [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
         public IActionResult Delete(int id)
         {
-            Category category = _unitOfWork.Category.Get(u => u.Id == id);
-            if (category == null)
+            var categoryDto = _unitOfWork.Category.Get(u => u.Id == id);
+            if (categoryDto == null)
             {
                 return NotFound();
             }
-            _unitOfWork.Category.Remove(category);
+            _unitOfWork.Category.Remove(categoryDto);
             _unitOfWork.Save();
-            return Ok(category);
+            return Ok(categoryDto);
         }
     }
 }

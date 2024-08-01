@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Staj.Dtos;
 using StajWeb.DataAccess.Repository.IRepository;
 using StajWeb.Models;
 using StajWeb.Models.ViewModels;
@@ -13,41 +15,46 @@ namespace Staj.Api.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ILogger<ProductController> _logger;
+        private readonly IMapper _mapper;
 
-        public ProductController(ILogger<ProductController> logger, IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        public ProductController(ILogger<ProductController> logger, IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IMapper mapper)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Product>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
         public IActionResult Get()
         {
-            IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
-            return Ok(productList);
+            var productDtos = _unitOfWork.Product.GetAll();
+            var data = _mapper.Map<List<ProductDto>>(productDtos);
+            return Ok(productDtos);
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            Product product = _unitOfWork.Product.Get(u => u.Id == id, includeProperties: "Category");
-            if (product == null)
+            var productDtos = _unitOfWork.Category.Get(u => u.Id == id);
+            var data = _mapper.Map<ProductDto>(productDtos);
+            if (productDtos == null)
             {
                 return NotFound();
             }
-            return Ok(product);
+            return Ok(productDtos);
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
         public IActionResult Post([FromBody] ProductVM productVM)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.Product.Add(productVM.Product);
+                var product = _mapper.Map<Product>(productVM.Product);
+                _unitOfWork.Product.Add(product);
                 _unitOfWork.Save();
                 return Ok(productVM);
             }
@@ -73,7 +80,8 @@ namespace Staj.Api.Controllers
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Product.Update(productVM.Product);
+                var product = _mapper.Map<Product>(productVM.Product);
+                _unitOfWork.Product.Update(product);
                 _unitOfWork.Save();
                 return Ok(productVM);
             }
@@ -89,18 +97,18 @@ namespace Staj.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
         public IActionResult Delete(int id)
         {
-            Product product = _unitOfWork.Product.Get(u => u.Id == id);
-            if (product == null)
+            var productDtos = _unitOfWork.Product.Get(u => u.Id == id);
+            if (productDtos == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.Product.Remove(product);
+            _unitOfWork.Product.Remove(productDtos);
             _unitOfWork.Save();
-            return Ok(id);
+            return Ok(productDtos);
         }
     }
 }
