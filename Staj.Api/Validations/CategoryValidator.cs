@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Staj.Dtos;
+using Staj.Api.Dtos;
 
 namespace Staj.Api.Validations
 {

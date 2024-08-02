@@ -1,7 +1,7 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Staj.Api.Dtos;
 using Staj.Api.Validations;
-using Staj.Dtos;
 using StajWeb.DataAccess.Data;
 using StajWeb.DataAccess.Repository;
 using StajWeb.DataAccess.Repository.IRepository;

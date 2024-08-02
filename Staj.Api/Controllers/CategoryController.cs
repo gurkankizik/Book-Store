@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Staj.Dtos;
+using Staj.Api.Dtos;
 using StajWeb.DataAccess.Repository.IRepository;
 using StajWeb.Models;
 

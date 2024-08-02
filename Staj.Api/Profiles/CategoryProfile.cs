@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Staj.Dtos;
+using Staj.Api.Dtos;
 using StajWeb.Models;
 
 namespace Staj.Api.Profiles

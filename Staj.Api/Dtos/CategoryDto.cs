@@ -1,4 +1,4 @@
-﻿namespace Staj.Dtos
+﻿namespace Staj.Api.Dtos
 {
     public class CategoryDto
     {

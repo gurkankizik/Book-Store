@@ -2,7 +2,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Staj.Dtos;
+using Staj.Api.Dtos;
 using StajWeb.DataAccess.Repository.IRepository;
 using StajWeb.Models;
 using StajWeb.Models.ViewModels;

@@ -1,6 +1,6 @@
 ﻿using StajWeb.Models;
 
-namespace Staj.Dtos
+namespace Staj.Api.Dtos
 {
     public class ProductDto
     {
