@@ -49,28 +49,28 @@ The project is divided into several layers:
 ## Screenshots
 
 ### Home Page
-![Home Page](screenshots/homepage.jpeg)
+![Home Page](Screenshots/homepage.jpeg)
 
 ### Log In Page
-![Log In Page](screenshots/loginpage.jpeg)
+![Log In Page](Screenshots/loginpage.jpeg)
 
 ### Register Page
-![Register Page](screenshots/registerpage.jpeg)
+![Register Page](Screenshots/registerpage.jpeg)
 
 ### Products Page
-![Products Page](screenshots/productspage.jpeg)
+![Products Page](Screenshots/productspage.jpeg)
 
 ### Create Product Page
-![Create Product Page](screenshots/createproductpage.jpeg)
+![Create Product Page](Screenshots/createproductpage.jpeg)
 
 ### Update Product Page
-![Update Product Page](screenshots/updateproductpage.jpeg)
+![Update Product Page](Screenshots/updateproductpage.jpeg)
 
 ### Category List
-![Category List](screenshots/categorypage.jpeg)
+![Category List](Screenshots/categorypage.jpeg)
 
 ### Create Category Page
-![Create Category Page](screenshots/createcategorypage.jpeg)
+![Create Category Page](Screenshots/createcategorypage.jpeg)
 
 ### Edit Category Page
-![Edit Category Page](screenshots/editcategorypage.jpeg)
+![Edit Category Page](Screenshots/editcategorypage.jpeg)
