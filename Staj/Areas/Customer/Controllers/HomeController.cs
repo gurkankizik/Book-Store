@@ -34,7 +34,7 @@ namespace Staj.Areas.Customer.Controllers
             else
             {
                 //Handle error response
-                List<ProductViewModel> objCategoryList = _unitOfWork.Product.GetAll().Select(x => new ProductViewModel
+                List<ProductViewModel> productList = _unitOfWork.Product.GetAll().Select(x => new ProductViewModel
                 {
                     Id = x.Id,
                     Author = x.Author,
@@ -48,7 +48,7 @@ namespace Staj.Areas.Customer.Controllers
                     ImgUrl = x.ImgUrl
 
                 }).ToList();
-                return View(new List<CategoryViewModel>());
+                return View(productList);
             }
             //IEnumerable<Product> productlist = _unitOfWork.Product.GetAll(includeProperties: "Category");
             //return View(productlist);
