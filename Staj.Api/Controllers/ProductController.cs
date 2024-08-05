@@ -32,8 +32,8 @@ namespace Staj.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
         public IActionResult Get()
         {
-            var productDtos = _unitOfWork.Product.GetAll();
-            var data = _mapper.Map<List<ProductDto>>(productDtos);
+            var products = _unitOfWork.Product.GetAll();
+            var productDtos = _mapper.Map<List<ProductDto>>(products);
             return Ok(productDtos);
         }
 
@@ -41,13 +41,13 @@ namespace Staj.Api.Controllers
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var productDtos = _unitOfWork.Category.Get(u => u.Id == id);
-            var data = _mapper.Map<ProductDto>(productDtos);
-            if (productDtos == null)
+            var product = _unitOfWork.Category.Get(u => u.Id == id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return Ok(productDtos);
+            var productDto = _mapper.Map<ProductDto>(product);
+            return Ok(productDto);
         }
 
         [HttpPost]
@@ -103,18 +103,19 @@ namespace Staj.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Product), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
         public IActionResult Delete(int id)
         {
-            var productDtos = _unitOfWork.Product.Get(u => u.Id == id);
-            if (productDtos == null)
+            var product = _unitOfWork.Product.Get(u => u.Id == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.Product.Remove(productDtos);
+            _unitOfWork.Product.Remove(product);
             _unitOfWork.Save();
-            return Ok(productDtos);
+            var productDto = _mapper.Map<ProductDto>(product);
+            return Ok(productDto);
         }
     }
 }

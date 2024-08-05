@@ -26,8 +26,8 @@ namespace Staj.Api.Controllers
         [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
         public IActionResult Get()
         {
-            var categoryDtos = _unitOfWork.Category.GetAll();
-            var data = _mapper.Map<List<CategoryDto>>(categoryDtos);
+            var category = _unitOfWork.Category.GetAll();
+            var categoryDto = _mapper.Map<List<CategoryDto>>(category);
 
             //List<CategoryViewModel> objCategoryList = _unitOfWork.Category.GetAll().Select(x => new CategoryViewModel
             //{
@@ -35,16 +35,16 @@ namespace Staj.Api.Controllers
             //    Name = x.Name,
             //    DisplayOrder = x.DisplayOrder
             //}).ToList();
-            return Ok(data);
+            return Ok(categoryDto);
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var categoryDto = _unitOfWork.Category.Get(u => u.Id == id);
-            var data = _mapper.Map<CategoryDto>(categoryDto);
-            if (categoryDto == null)
+            var category = _unitOfWork.Category.Get(u => u.Id == id);
+            var categoryDto = _mapper.Map<CategoryDto>(category);
+            if (category == null)
             {
                 return NotFound();
             }
@@ -52,17 +52,17 @@ namespace Staj.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
         public IActionResult Post([FromBody] CategoryDto categoryDto)
         {
             var result = _validator.Validate(categoryDto);
 
             if (result.IsValid)
             {
-                var data = _mapper.Map<Category>(categoryDto);
-                _unitOfWork.Category.Add(data);
+                var category = _mapper.Map<Category>(categoryDto);
+                _unitOfWork.Category.Add(category);
                 _unitOfWork.Save();
-                return Ok(data);
+                return Ok(category);
             }
             else
             {
@@ -75,16 +75,16 @@ namespace Staj.Api.Controllers
         public IActionResult Put(int id, [FromBody] CategoryDto categoryDto)
         {
             var result = _validator.Validate(categoryDto);
-            var data = _mapper.Map<Category>(categoryDto);
+            var category = _mapper.Map<Category>(categoryDto);
             if (id != categoryDto.Id)
             {
                 return NotFound();
             }
             if (result.IsValid)
             {
-                _unitOfWork.Category.Update(data);
+                _unitOfWork.Category.Update(category);
                 _unitOfWork.Save();
-                return Ok(data);
+                return Ok(category);
             }
             else
             {
@@ -93,16 +93,17 @@ namespace Staj.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
         public IActionResult Delete(int id)
         {
-            var categoryDto = _unitOfWork.Category.Get(u => u.Id == id);
-            if (categoryDto == null)
+            var category = _unitOfWork.Category.Get(u => u.Id == id);
+            if (category == null)
             {
                 return NotFound();
             }
-            _unitOfWork.Category.Remove(categoryDto);
+            _unitOfWork.Category.Remove(category);
             _unitOfWork.Save();
+            var categoryDto = _mapper.Map<CategoryDto>(category);
             return Ok(categoryDto);
         }
     }
