@@ -41,7 +41,7 @@ namespace Staj.Api.Controllers
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
         public IActionResult Get(int id)
         {
-            var product = _unitOfWork.Category.Get(u => u.Id == id);
+            var product = _unitOfWork.Product.Get(u => u.Id == id);
             if (product == null)
             {
                 return NotFound();
