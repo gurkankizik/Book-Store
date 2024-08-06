@@ -18,12 +18,10 @@ namespace Staj.Api.Features.Products.Queries.GetProducts
             _mapper = mapper;
         }
 
-
         public Task<List<GetProductsResponse>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
         {
             var products = _unitOfWork.Product.GetAll();
             var productResponses = _mapper.Map<List<GetProductsResponse>>(products);
-
             return Task.FromResult(productResponses);
         }
     }

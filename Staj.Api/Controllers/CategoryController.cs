@@ -1,7 +1,13 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Staj.Api.Dtos;
+using Staj.Api.Features.Categories.Commands.AddCategory;
+using Staj.Api.Features.Categories.Commands.DeleteCategory;
+using Staj.Api.Features.Categories.Commands.UpdateCategory;
+using Staj.Api.Features.Categories.Queries.GetCategories;
+using Staj.Api.Features.Categories.Queries.GetCategory;
 using StajWeb.DataAccess.Repository.IRepository;
 using StajWeb.Models;
 
@@ -11,23 +17,24 @@ namespace Staj.Api.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
+        private readonly IMediator _mediator;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IValidator<CategoryDto> _validator;
 
-        public CategoryController(IUnitOfWork UnitOfWork, IMapper mapper, IValidator<CategoryDto> validator)
+        public CategoryController(IUnitOfWork UnitOfWork, IMapper mapper, IValidator<CategoryDto> validator, IMediator mediator)
         {
             _unitOfWork = UnitOfWork;
             _mapper = mapper;
             _validator = validator;
+            _mediator = mediator;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var category = _unitOfWork.Category.GetAll();
-            var categoryDto = _mapper.Map<List<CategoryDto>>(category);
+            var categoryDto = await _mediator.Send(new GetCategoriesQuery());
 
             //List<CategoryViewModel> objCategoryList = _unitOfWork.Category.GetAll().Select(x => new CategoryViewModel
             //{
@@ -40,14 +47,9 @@ namespace Staj.Api.Controllers
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var category = _unitOfWork.Category.Get(u => u.Id == id);
-            var categoryDto = _mapper.Map<CategoryDto>(category);
-            if (category == null)
-            {
-                return NotFound();
-            }
+            var categoryDto = await _mediator.Send(new GetCategoryQuery { Id = id });
             return Ok(categoryDto);
         }
 
@@ -59,10 +61,9 @@ namespace Staj.Api.Controllers
 
             if (result.IsValid)
             {
-                var category = _mapper.Map<Category>(categoryDto);
-                _unitOfWork.Category.Add(category);
-                _unitOfWork.Save();
-                return Ok(category);
+                var mappedCategory = _mapper.Map<AddCategoryCommand>(categoryDto);
+                var categoryToAdd = _mediator.Send(mappedCategory);
+                return Ok(categoryToAdd);
             }
             else
             {
@@ -75,16 +76,15 @@ namespace Staj.Api.Controllers
         public IActionResult Put(int id, [FromBody] CategoryDto categoryDto)
         {
             var result = _validator.Validate(categoryDto);
-            var category = _mapper.Map<Category>(categoryDto);
             if (id != categoryDto.Id)
             {
                 return NotFound();
             }
             if (result.IsValid)
             {
-                _unitOfWork.Category.Update(category);
-                _unitOfWork.Save();
-                return Ok(category);
+                var mappedCategory = _mapper.Map<UpdateCategoryCommand>(categoryDto);
+                var categoryToUpdate = _mediator.Send(mappedCategory);
+                return Ok(categoryToUpdate);
             }
             else
             {
@@ -101,10 +101,8 @@ namespace Staj.Api.Controllers
             {
                 return NotFound();
             }
-            _unitOfWork.Category.Remove(category);
-            _unitOfWork.Save();
-            var categoryDto = _mapper.Map<CategoryDto>(category);
-            return Ok(categoryDto);
+            var categoryDelete = _mediator.Send(new DeleteCategoryCommand { Id = id });
+            return Ok(categoryDelete);
         }
     }
 }
