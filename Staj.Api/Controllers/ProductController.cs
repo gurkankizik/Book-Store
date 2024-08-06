@@ -1,8 +1,14 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Staj.Api.Dtos;
+using Staj.Api.Features.Products.Commands.AddProduct;
+using Staj.Api.Features.Products.Commands.Delete_Product;
+using Staj.Api.Features.Products.Commands.UpdateProduct;
+using Staj.Api.Features.Products.Queries.GetProduct;
+using Staj.Api.Features.Products.Queries.GetProducts;
 using StajWeb.DataAccess.Repository.IRepository;
 using StajWeb.Models;
 using StajWeb.Models.ViewModels;
@@ -13,40 +19,36 @@ namespace Staj.Api.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
+        private readonly IMediator _mediator;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ILogger<ProductController> _logger;
         private readonly IMapper _mapper;
         private readonly IValidator<ProductVM> _validator;
 
-        public ProductController(ILogger<ProductController> logger, IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IMapper mapper, IValidator<ProductVM> validator)
+        public ProductController(ILogger<ProductController> logger, IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IMapper mapper, IValidator<ProductVM> validator, IMediator mediator)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
             _mapper = mapper;
             _validator = validator;
+            _mediator = mediator;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var products = _unitOfWork.Product.GetAll();
-            var productDtos = _mapper.Map<List<ProductDto>>(products);
+            var productDtos = await _mediator.Send(new GetProductsQuery());
             return Ok(productDtos);
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var product = _unitOfWork.Product.Get(u => u.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            var productDto = _mapper.Map<ProductDto>(product);
+            var productDto = await _mediator.Send(new GetProductQuery { Id = id });
             return Ok(productDto);
         }
 
@@ -57,10 +59,8 @@ namespace Staj.Api.Controllers
             var result = _validator.Validate(productVM);
             if (result.IsValid)
             {
-                var product = _mapper.Map<Product>(productVM.Product);
-                _unitOfWork.Product.Add(product);
-                _unitOfWork.Save();
-                return Ok(productVM);
+                var productToAdd = _mediator.Send(new AddProductCommand { ProductVM = productVM }).Result;
+                return Ok(productToAdd);
             }
             else
             {
@@ -85,10 +85,8 @@ namespace Staj.Api.Controllers
             var result = _validator.Validate(productVM);
             if (result.IsValid)
             {
-                var product = _mapper.Map<Product>(productVM.Product);
-                _unitOfWork.Product.Update(product);
-                _unitOfWork.Save();
-                return Ok(productVM);
+                var productToUpdate = _mediator.Send(new UpdateProductCommand { ProductVM = productVM }).Result;
+                return Ok(productToUpdate);
             }
             else
             {
@@ -111,11 +109,8 @@ namespace Staj.Api.Controllers
             {
                 return NotFound();
             }
-
-            _unitOfWork.Product.Remove(product);
-            _unitOfWork.Save();
-            var productDto = _mapper.Map<ProductDto>(product);
-            return Ok(productDto);
+            var productDelete = _mediator.Send(new DeleteProductCommand { Id = id });
+            return Ok();
         }
     }
 }

@@ -6,6 +6,7 @@ using StajWeb.DataAccess.Data;
 using StajWeb.DataAccess.Repository;
 using StajWeb.DataAccess.Repository.IRepository;
 using StajWeb.Models.ViewModels;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,10 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IValidator<CategoryDto>, CategoryValidator>();
 builder.Services.AddScoped<IValidator<ProductVM>, ProductValidator>();
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+});
 
 var app = builder.Build();
 
