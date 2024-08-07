@@ -20,12 +20,13 @@ namespace Staj.Api.Features.Products.Commands.AddProduct
             _mapper = mapper;
         }
 
-        public async Task<ProductVM> Handle(AddProductCommand request, CancellationToken cancellationToken)
+        public Task<ProductVM> Handle(AddProductCommand request, CancellationToken cancellationToken)
         {
             var product = _mapper.Map<Product>(request.ProductVM.Product);
             _unitOfWork.Product.Add(product);
             _unitOfWork.Save();
-            return _mapper.Map<ProductVM>(product);
+            var response = _mapper.Map<ProductVM>(product);
+            return Task.FromResult(response);
         }
     }
 }

@@ -40,21 +40,21 @@ namespace Staj.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<ProductDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get()
         {
-            var productDtos = await _mediator.Send(new GetProductsQuery());
-            return Ok(productDtos);
+            var products = await _mediator.Send(new GetProductsQuery());
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(int id)
         {
-            var productDto = await _mediator.Send(new GetProductQuery { Id = id });
-            return Ok(productDto);
+            var product = await _mediator.Send(new GetProductQuery { Id = id });
+            return Ok(product);
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
-        public IActionResult Post([FromBody] ProductVM productVM)
+        public async Task<IActionResult> Post([FromBody] ProductVM productVM)
         {
             var result = _validator.Validate(productVM);
             if (result.IsValid)
@@ -102,15 +102,10 @@ namespace Staj.Api.Controllers
 
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var product = _unitOfWork.Product.Get(u => u.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            var productDelete = _mediator.Send(new DeleteProductCommand { Id = id });
-            return Ok();
+            await _mediator.Send(new DeleteProductCommand { Id = id });
+            return NoContent();
         }
     }
 }

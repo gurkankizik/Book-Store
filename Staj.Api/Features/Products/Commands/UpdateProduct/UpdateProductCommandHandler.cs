@@ -25,7 +25,8 @@ namespace Staj.Api.Features.Products.Commands.UpdateProduct
             var product = _mapper.Map<Product>(request.ProductVM.Product);
             _unitOfWork.Product.Update(product);
             _unitOfWork.Save();
-            return Task.FromResult(_mapper.Map<ProductVM>(product));
+            var response = _mapper.Map<ProductVM>(product);
+            return Task.FromResult(response);
         }
     }
 }

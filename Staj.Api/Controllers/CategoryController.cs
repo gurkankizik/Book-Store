@@ -34,7 +34,7 @@ namespace Staj.Api.Controllers
         [ProducesResponseType(typeof(List<CategoryDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get()
         {
-            var categoryDto = await _mediator.Send(new GetCategoriesQuery());
+            var categories = await _mediator.Send(new GetCategoriesQuery());
 
             //List<CategoryViewModel> objCategoryList = _unitOfWork.Category.GetAll().Select(x => new CategoryViewModel
             //{
@@ -42,28 +42,28 @@ namespace Staj.Api.Controllers
             //    Name = x.Name,
             //    DisplayOrder = x.DisplayOrder
             //}).ToList();
-            return Ok(categoryDto);
+            return Ok(categories);
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(int id)
         {
-            var categoryDto = await _mediator.Send(new GetCategoryQuery { Id = id });
-            return Ok(categoryDto);
+            var category = await _mediator.Send(new GetCategoryQuery { Id = id });
+            return Ok(category);
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
-        public IActionResult Post([FromBody] CategoryDto categoryDto)
+        public async Task<IActionResult> Post([FromBody] CategoryDto categoryDto)
         {
             var result = _validator.Validate(categoryDto);
 
             if (result.IsValid)
             {
                 var mappedCategory = _mapper.Map<AddCategoryCommand>(categoryDto);
-                var categoryToAdd = _mediator.Send(mappedCategory);
-                return Ok(categoryToAdd);
+                var categoryToAdd = await _mediator.Send(mappedCategory);
+                return Ok(categoryDto);
             }
             else
             {
@@ -73,7 +73,7 @@ namespace Staj.Api.Controllers
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
-        public IActionResult Put(int id, [FromBody] CategoryDto categoryDto)
+        public async Task<IActionResult> Put(int id, [FromBody] CategoryDto categoryDto)
         {
             var result = _validator.Validate(categoryDto);
             if (id != categoryDto.Id)
@@ -84,7 +84,7 @@ namespace Staj.Api.Controllers
             {
                 var mappedCategory = _mapper.Map<UpdateCategoryCommand>(categoryDto);
                 var categoryToUpdate = _mediator.Send(mappedCategory);
-                return Ok(categoryToUpdate);
+                return Ok(categoryDto);
             }
             else
             {
@@ -94,15 +94,10 @@ namespace Staj.Api.Controllers
 
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var category = _unitOfWork.Category.Get(u => u.Id == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            var categoryDelete = _mediator.Send(new DeleteCategoryCommand { Id = id });
-            return Ok(categoryDelete);
+            await _mediator.Send(new DeleteCategoryCommand { Id = id });
+            return NoContent();
         }
     }
 }

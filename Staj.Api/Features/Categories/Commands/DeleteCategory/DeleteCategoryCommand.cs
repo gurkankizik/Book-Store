@@ -2,7 +2,7 @@
 
 namespace Staj.Api.Features.Categories.Commands.DeleteCategory
 {
-    public class DeleteCategoryCommand : IRequest<DeleteCategoryResponse>
+    public class DeleteCategoryCommand : IRequest
     {
         public int Id { get; set; }
     }

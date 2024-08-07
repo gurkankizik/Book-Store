@@ -19,7 +19,7 @@ namespace Staj.Api.Features.Products.Queries.GetProduct
         }
 
 
-        public async Task<GetProductResponse> Handle(GetProductQuery request, CancellationToken cancellationToken)
+        public Task<GetProductResponse> Handle(GetProductQuery request, CancellationToken cancellationToken)
         {
             var product = _unitOfWork.Product.Get(u => u.Id == request.Id);
             if (product == null)
@@ -29,7 +29,7 @@ namespace Staj.Api.Features.Products.Queries.GetProduct
             }
             var productResponse = _mapper.Map<GetProductResponse>(product);
 
-            return await Task.FromResult(productResponse);
+            return Task.FromResult(productResponse);
         }
     }
 }

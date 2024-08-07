@@ -21,6 +21,11 @@ namespace Staj.Api.Features.Products.Commands.Delete_Product
         public Task Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
             var product = _unitOfWork.Product.Get(u => u.Id == request.Id);
+            if (product == null)
+            {
+                _logger.LogWarning($"Product with ID {request.Id} not found.");
+                return null;
+            }
             _unitOfWork.Product.Remove(product);
             _unitOfWork.Save();
             var productDto = _mapper.Map<ProductDto>(product);
