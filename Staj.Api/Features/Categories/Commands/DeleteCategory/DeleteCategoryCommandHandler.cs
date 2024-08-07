@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using Staj.Api.Dtos;
 using StajWeb.DataAccess.Repository.IRepository;
 
 namespace Staj.Api.Features.Categories.Commands.DeleteCategory
@@ -23,11 +22,10 @@ namespace Staj.Api.Features.Categories.Commands.DeleteCategory
             if (category == null)
             {
                 _logger.LogWarning($"Product with ID {request.Id} not found.");
-                return null;
+                throw new KeyNotFoundException($"Product with ID {request.Id} not found.");
             }
             _unitOfWork.Category.Remove(category);
             _unitOfWork.Save();
-            var categoryDto = _mapper.Map<CategoryDto>(category);
             return Task.CompletedTask;
         }
     }

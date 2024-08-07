@@ -20,7 +20,7 @@ namespace Staj.Api.Features.Products.Queries.GetProducts
 
         public Task<List<GetProductsResponse>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
         {
-            var products = _unitOfWork.Product.GetAll();
+            var products = _unitOfWork.Product.GetAll(includeProperties: "Category");
             var productResponses = _mapper.Map<List<GetProductsResponse>>(products);
             return Task.FromResult(productResponses);
         }

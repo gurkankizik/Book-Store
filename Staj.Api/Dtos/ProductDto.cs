@@ -14,7 +14,7 @@ namespace Staj.Api.Dtos
         public double Price50 { get; set; }
         public double Price100 { get; set; }
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
         public string ImgUrl { get; set; }
     }
 }

@@ -21,14 +21,20 @@ namespace Staj.Api.Features.Products.Queries.GetProduct
 
         public Task<GetProductResponse> Handle(GetProductQuery request, CancellationToken cancellationToken)
         {
-            var product = _unitOfWork.Product.Get(u => u.Id == request.Id);
+            var product = _unitOfWork.Product.Get(u => u.Id == request.Id, includeProperties: "Category");
             if (product == null)
             {
                 _logger.LogWarning($"Product with ID {request.Id} not found.");
-                return null;
+                return Task.FromResult<GetProductResponse>(null);
             }
-            var productResponse = _mapper.Map<GetProductResponse>(product);
 
+            // Ensure the category is included
+            if (product.Category == null)
+            {
+                product.Category = _unitOfWork.Category.Get(u => u.Id == product.CategoryId);
+            }
+
+            var productResponse = _mapper.Map<GetProductResponse>(product);
             return Task.FromResult(productResponse);
         }
     }

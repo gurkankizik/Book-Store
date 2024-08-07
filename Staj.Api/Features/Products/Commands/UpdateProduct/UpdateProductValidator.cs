@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
-using Staj.Api.Dtos;
+using Staj.Api.Features.Products.Commands.UpdateProduct;
 
-namespace Staj.Api.Validations
+namespace Staj.Api.Features.Products.Commands.UpdateProductValidator
 {
-    public class ProductValidator : AbstractValidator<ProductDto>
+    public class UpdateProductValidator : AbstractValidator<UpdateProductCommand>
     {
-        public ProductValidator()
+        public UpdateProductValidator()
         {
             RuleFor(x => x.Title)
                 .NotEmpty().WithMessage("Title is required");

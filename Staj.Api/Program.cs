@@ -1,11 +1,8 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Staj.Api.Dtos;
-using Staj.Api.Validations;
 using StajWeb.DataAccess.Data;
 using StajWeb.DataAccess.Repository;
 using StajWeb.DataAccess.Repository.IRepository;
-using StajWeb.Models.ViewModels;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,8 +19,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IValidator<CategoryDto>, CategoryValidator>();
-builder.Services.AddScoped<IValidator<ProductVM>, ProductValidator>();
+//builder.Services.AddScoped<IValidator<CategoryDto>, CategoryValidator>();
+//builder.Services.AddScoped<IValidator<ProductDto>, ProductValidator>();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());

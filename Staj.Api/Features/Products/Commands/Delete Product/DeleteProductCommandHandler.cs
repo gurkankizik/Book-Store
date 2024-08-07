@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using Staj.Api.Dtos;
 using Staj.Api.Features.Products.Queries.GetProducts;
 using StajWeb.DataAccess.Repository.IRepository;
 
@@ -24,11 +23,10 @@ namespace Staj.Api.Features.Products.Commands.Delete_Product
             if (product == null)
             {
                 _logger.LogWarning($"Product with ID {request.Id} not found.");
-                return null;
+                throw new KeyNotFoundException($"Product with ID {request.Id} not found.");
             }
             _unitOfWork.Product.Remove(product);
             _unitOfWork.Save();
-            var productDto = _mapper.Map<ProductDto>(product);
             return Task.CompletedTask;
         }
     }

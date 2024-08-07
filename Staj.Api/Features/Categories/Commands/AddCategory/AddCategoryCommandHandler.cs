@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Staj.Api.Features.Products.Queries.GetProducts;
 using StajWeb.DataAccess.Repository.IRepository;
@@ -11,21 +12,29 @@ namespace Staj.Api.Features.Categories.Commands.AddCategory
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<GetProductsQueryHandler> _logger;
         private readonly IMapper _mapper;
+        private readonly IValidator<AddCategoryCommand> _validator;
 
-        public AddCategoryCommandHandler(IUnitOfWork unitOfWork, ILogger<GetProductsQueryHandler> logger, IMapper mapper)
+        public AddCategoryCommandHandler(IUnitOfWork unitOfWork, ILogger<GetProductsQueryHandler> logger, IMapper mapper, IValidator<AddCategoryCommand> validator)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
+            _validator = validator;
         }
 
         public Task<AddCategoryResponse> Handle(AddCategoryCommand request, CancellationToken cancellationToken)
         {
-            var category = _mapper.Map<Category>(request);
-            _unitOfWork.Category.Add(category);
-            _unitOfWork.Save();
-            var response = _mapper.Map<AddCategoryResponse>(category);
-            return Task.FromResult(response);
+            var result = _validator.Validate(request);
+
+            if (result.IsValid)
+            {
+                var category = _mapper.Map<Category>(request);
+                _unitOfWork.Category.Add(category);
+                _unitOfWork.Save();
+                var response = _mapper.Map<AddCategoryResponse>(category);
+                return Task.FromResult(response);
+            }
+            throw new ValidationException(result.Errors);
         }
     }
 }

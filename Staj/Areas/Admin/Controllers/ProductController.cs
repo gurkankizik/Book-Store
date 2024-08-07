@@ -100,7 +100,7 @@ namespace Staj.Areas.Admin.Controllers
                     productVM.Product.ImgUrl = @"\images\product\" + fileName;
                 }
 
-                var jsonContent = JsonConvert.SerializeObject(productVM);
+                var jsonContent = JsonConvert.SerializeObject(productVM.Product);
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
                 if (productVM.Product.Id == 0)

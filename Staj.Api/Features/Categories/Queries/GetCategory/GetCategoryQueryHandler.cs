@@ -21,11 +21,11 @@ namespace Staj.Api.Features.Categories.Queries.GetCategory
             var category = _unitOfWork.Category.Get(u => u.Id == request.Id);
             if (category == null)
             {
-                _logger.LogWarning($"Product with ID {request.Id} not found.");
-                return null;
+                _logger.LogWarning($"Category with ID {request.Id} not found.");
+                return Task.FromResult<GetCategoryResponse>(null);
             }
-            var categoryResponse = _mapper.Map<GetCategoryResponse>(category);
 
+            var categoryResponse = _mapper.Map<GetCategoryResponse>(category);
             return Task.FromResult(categoryResponse);
         }
     }
