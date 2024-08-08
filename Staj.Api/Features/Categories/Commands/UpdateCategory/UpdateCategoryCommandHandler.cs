@@ -2,7 +2,6 @@
 using FluentValidation;
 using MediatR;
 using StajWeb.DataAccess.Repository.IRepository;
-using StajWeb.Models;
 
 namespace Staj.Api.Features.Categories.Commands.UpdateCategory
 {
@@ -23,20 +22,22 @@ namespace Staj.Api.Features.Categories.Commands.UpdateCategory
 
         public Task<UpdateCategoryResponse> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
-            //var existingCategory = _unitOfWork.Category.Get(u => u.Id == request.Id);
-            //if (existingCategory == null)
-            //{
-            //    _logger.LogWarning($"Category with ID {request.Id} not found.");
-            //    throw new KeyNotFoundException($"Category with ID {request.Id} not found.");
-            //}
+            var existingCategory = _unitOfWork.Category.Get(u => u.Id == request.Id);
+            if (existingCategory == null)
+            {
+                _logger.LogWarning($"Category with ID {request.Id} not found.");
+                throw new KeyNotFoundException($"Category with ID {request.Id} not found.");
+            }
 
             var result = _validator.Validate(request);
             if (result.IsValid)
             {
-                var category = _mapper.Map<Category>(request);
-                _unitOfWork.Category.Update(category);
+                // Update the existing category with the new values
+                _mapper.Map(request, existingCategory);
+                _unitOfWork.Category.Update(existingCategory);
                 _unitOfWork.Save();
-                var response = _mapper.Map<UpdateCategoryResponse>(category);
+
+                var response = _mapper.Map<UpdateCategoryResponse>(existingCategory);
                 return Task.FromResult(response);
             }
             throw new ValidationException(result.Errors);

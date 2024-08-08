@@ -7,10 +7,10 @@ namespace Staj.Api.Features.Categories.Commands.DeleteCategory
     public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<DeleteCategoryCommand> _logger;
+        private readonly ILogger<DeleteCategoryCommandHandler> _logger;
         private readonly IMapper _mapper;
 
-        public DeleteCategoryCommandHandler(IUnitOfWork unitOfWork, ILogger<DeleteCategoryCommand> logger, IMapper mapper)
+        public DeleteCategoryCommandHandler(IUnitOfWork unitOfWork, ILogger<DeleteCategoryCommandHandler> logger, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -21,8 +21,8 @@ namespace Staj.Api.Features.Categories.Commands.DeleteCategory
             var category = _unitOfWork.Category.Get(u => u.Id == request.Id);
             if (category == null)
             {
-                _logger.LogWarning($"Product with ID {request.Id} not found.");
-                throw new KeyNotFoundException($"Product with ID {request.Id} not found.");
+                _logger.LogWarning($"Category with ID {request.Id} not found.");
+                throw new KeyNotFoundException($"Category with ID {request.Id} not found.");
             }
             _unitOfWork.Category.Remove(category);
             _unitOfWork.Save();

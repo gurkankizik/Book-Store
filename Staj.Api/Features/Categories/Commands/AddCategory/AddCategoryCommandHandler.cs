@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
-using Staj.Api.Features.Products.Queries.GetProducts;
 using StajWeb.DataAccess.Repository.IRepository;
 using StajWeb.Models;
 
@@ -10,11 +9,11 @@ namespace Staj.Api.Features.Categories.Commands.AddCategory
     public class AddCategoryCommandHandler : IRequestHandler<AddCategoryCommand, AddCategoryResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<GetProductsQueryHandler> _logger;
+        private readonly ILogger<AddCategoryCommandHandler> _logger;
         private readonly IMapper _mapper;
         private readonly IValidator<AddCategoryCommand> _validator;
 
-        public AddCategoryCommandHandler(IUnitOfWork unitOfWork, ILogger<GetProductsQueryHandler> logger, IMapper mapper, IValidator<AddCategoryCommand> validator)
+        public AddCategoryCommandHandler(IUnitOfWork unitOfWork, ILogger<AddCategoryCommandHandler> logger, IMapper mapper, IValidator<AddCategoryCommand> validator)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;

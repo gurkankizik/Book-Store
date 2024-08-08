@@ -25,9 +25,8 @@ namespace Staj.Api.Features.Products.Queries.GetProduct
             if (product == null)
             {
                 _logger.LogWarning($"Product with ID {request.Id} not found.");
-                return Task.FromResult<GetProductResponse>(null);
+                throw new KeyNotFoundException($"Product with ID {request.Id} not found.");
             }
-
             // Ensure the category is included
             if (product.Category == null)
             {

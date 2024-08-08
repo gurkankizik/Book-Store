@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
-using Staj.Api.Features.Products.Queries.GetProducts;
 using StajWeb.DataAccess.Repository.IRepository;
 using StajWeb.Models;
 
@@ -10,11 +9,11 @@ namespace Staj.Api.Features.Products.Commands.AddProduct
     public class AddProductCommandHandler : IRequestHandler<AddProductCommand, AddProductResponse>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<GetProductsQueryHandler> _logger;
+        private readonly ILogger<AddProductCommandHandler> _logger;
         private readonly IMapper _mapper;
         private readonly IValidator<AddProductCommand> _validator;
 
-        public AddProductCommandHandler(IUnitOfWork unitOfWork, ILogger<GetProductsQueryHandler> logger, IMapper mapper, IValidator<AddProductCommand> validator)
+        public AddProductCommandHandler(IUnitOfWork unitOfWork, ILogger<AddProductCommandHandler> logger, IMapper mapper, IValidator<AddProductCommand> validator)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using Staj.Api.Features.Products.Queries.GetProducts;
 using StajWeb.DataAccess.Repository.IRepository;
 
 namespace Staj.Api.Features.Products.Commands.Delete_Product
@@ -8,10 +7,10 @@ namespace Staj.Api.Features.Products.Commands.Delete_Product
     public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<GetProductsQueryHandler> _logger;
+        private readonly ILogger<DeleteProductCommandHandler> _logger;
         private readonly IMapper _mapper;
 
-        public DeleteProductCommandHandler(IUnitOfWork unitOfWork, ILogger<GetProductsQueryHandler> logger, IMapper mapper)
+        public DeleteProductCommandHandler(IUnitOfWork unitOfWork, ILogger<DeleteProductCommandHandler> logger, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;

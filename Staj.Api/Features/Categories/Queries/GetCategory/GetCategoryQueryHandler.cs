@@ -22,7 +22,7 @@ namespace Staj.Api.Features.Categories.Queries.GetCategory
             if (category == null)
             {
                 _logger.LogWarning($"Category with ID {request.Id} not found.");
-                return Task.FromResult<GetCategoryResponse>(null);
+                throw new KeyNotFoundException($"Category with ID {request.Id} not found.");
             }
 
             var categoryResponse = _mapper.Map<GetCategoryResponse>(category);
