@@ -13,18 +13,21 @@ namespace Staj.Areas.Customer.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IUnitOfWork _unitOfWork;
         private readonly HttpClient _httpClient;
-        private readonly string _apiUrl = "http://localhost:5198/api/Product";
+        private readonly IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, HttpClient httpClient)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, HttpClient httpClient, IConfiguration configuration)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _httpClient = httpClient;
+            _configuration = configuration;
         }
 
         public async Task<IActionResult> Index()
         {
-            var response = await _httpClient.GetAsync(_apiUrl);
+            var endpoint = _configuration.GetSection("AppSettings:ApiUrl").Value;
+
+            var response = await _httpClient.GetAsync($"{endpoint}/api/Product");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -56,8 +59,8 @@ namespace Staj.Areas.Customer.Controllers
 
         public async Task<IActionResult> Details(int productId)
         {
-            string apiUrlWithId = $"{_apiUrl}/{productId}";
-            var response = await _httpClient.GetAsync(apiUrlWithId);
+            var endpoint = _configuration.GetSection("AppSettings:ApiUrl").Value;
+            var response = await _httpClient.GetAsync($"{endpoint}/api/Product/{productId}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();

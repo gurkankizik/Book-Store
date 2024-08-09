@@ -18,17 +18,19 @@ namespace Staj.Areas.Admin.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly HttpClient _httpClient;
-        private readonly string _apiUrl = "http://localhost:5198/api/Product";
+        private readonly IConfiguration _configuration;
 
-        public ProductController(IUnitOfWork UnitOfWork, IWebHostEnvironment webHostEnvironment, HttpClient httpClient)
+        public ProductController(IUnitOfWork UnitOfWork, IWebHostEnvironment webHostEnvironment, HttpClient httpClient, IConfiguration configuration)
         {
             _unitOfWork = UnitOfWork;
             _webHostEnvironment = webHostEnvironment;
             _httpClient = httpClient;
+            _configuration = configuration;
         }
         public async Task<IActionResult> Index()
         {
-            var response = await _httpClient.GetAsync(_apiUrl);
+            var endpoint = _configuration.GetSection("AppSettings:ApiUrl").Value;
+            var response = await _httpClient.GetAsync($"{endpoint}/api/Product");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -105,7 +107,8 @@ namespace Staj.Areas.Admin.Controllers
 
                 if (productVM.Product.Id == 0)
                 {
-                    var response = await _httpClient.PostAsync(_apiUrl, content);
+                    var endpoint = _configuration.GetSection("AppSettings:ApiUrl").Value;
+                    var response = await _httpClient.PostAsync($"{endpoint}/api/Product", content);
                     if (response.IsSuccessStatusCode)
                     {
                         TempData["success"] = "Product created successfully";
@@ -123,7 +126,8 @@ namespace Staj.Areas.Admin.Controllers
                 }
                 else
                 {
-                    var response = await _httpClient.PutAsync($"{_apiUrl}/{productVM.Product.Id}", content);
+                    var endpoint = _configuration.GetSection("AppSettings:ApiUrl").Value;
+                    var response = await _httpClient.PutAsync($"{endpoint}/api/Product/{productVM.Product.Id}", content);
                     if (response.IsSuccessStatusCode)
                     {
                         TempData["success"] = "Product updated successfully";

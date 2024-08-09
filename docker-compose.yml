@@ -1,0 +1,15 @@
+services:
+  staj-db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+
+  staj.api:
+    image: ${DOCKER_REGISTRY-}stajapi
+    build:
+      context: .
+      dockerfile: Staj.Api/Dockerfile
+
+  staj:
+    image: ${DOCKER_REGISTRY-}staj
+    build:
+      context: .
+      dockerfile: Staj/Dockerfile

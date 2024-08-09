@@ -16,17 +16,20 @@ namespace Staj.Areas.Admin.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly HttpClient _httpClient;
-        private readonly string _apiUrl = "http://localhost:5198/api/Category";
+        //private readonly string _apiUrl = "http://localhost:5198/api/Category";
+        private readonly IConfiguration _configuration;
 
 
-        public CategoryController(IUnitOfWork UnitOfWork, HttpClient httpClient)
+        public CategoryController(IUnitOfWork UnitOfWork, HttpClient httpClient, IConfiguration configuration)
         {
             _unitOfWork = UnitOfWork;
             _httpClient = httpClient;
+            _configuration = configuration;
         }
         public async Task<IActionResult> Index()
         {
-            var response = await _httpClient.GetAsync(_apiUrl);
+            var endpoint = _configuration.GetSection("AppSettings:ApiUrl").Value;
+            var response = await _httpClient.GetAsync($"{endpoint}/api/Category");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -67,7 +70,8 @@ namespace Staj.Areas.Admin.Controllers
             {
                 var jsonContent = JsonConvert.SerializeObject(obj);
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PostAsync(_apiUrl, content);
+                var endpoint = _configuration.GetSection("AppSettings:ApiUrl").Value;
+                var response = await _httpClient.PostAsync($"{endpoint}/api/Category", content);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -102,7 +106,8 @@ namespace Staj.Areas.Admin.Controllers
             {
                 var jsonContent = JsonConvert.SerializeObject(obj);
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-                var response = await _httpClient.PutAsync($"{_apiUrl}/{obj.Id}", content);
+                var endpoint = _configuration.GetSection("AppSettings:ApiUrl").Value;
+                var response = await _httpClient.PutAsync($"{endpoint}/api/Category/{obj.Id}", content);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -133,7 +138,8 @@ namespace Staj.Areas.Admin.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeletePOST(int? id)
         {
-            var response = await _httpClient.DeleteAsync($"{_apiUrl}/{id}");
+            var endpoint = _configuration.GetSection("AppSettings:ApiUrl").Value;
+            var response = await _httpClient.DeleteAsync($"{endpoint}/api/Category/{id}");
             if (response.IsSuccessStatusCode)
             {
                 TempData["success"] = "Category deleted successfully";
