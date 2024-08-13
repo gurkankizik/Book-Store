@@ -31,8 +31,8 @@ namespace Staj.Areas.Customer.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var categories = JsonConvert.DeserializeObject<List<ProductViewModel>>(content);
-                return View(categories);
+                var products = JsonConvert.DeserializeObject<List<ProductViewModel>>(content);
+                return View(products);
             }
             else
             {
