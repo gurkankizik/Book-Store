@@ -17,6 +17,7 @@ The Book Store project is a web application designed to manage products and cate
 - **Bootstrap**: For responsive UI design.
 - **jQuery**: For client-side scripting.
 - **SQL Server**: The database used for storing application data.
+- **Docker**: For containerizing the application.
 
 ## Project Structure
 
