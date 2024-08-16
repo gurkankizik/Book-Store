@@ -14,21 +14,12 @@ namespace Staj.Api.Profiles
         {
             CreateMap<Category, CategoryDto>();
             CreateMap<CategoryDto, Category>();
-
             CreateMap<Category, GetCategoriesResponse>();
             CreateMap<Category, GetCategoryResponse>();
-
-            CreateMap<Category, AddCategoryResponse>();
-            CreateMap<CategoryDto, AddCategoryCommand>();
+            CreateMap<Category, AddCategoryResponse>().ReverseMap();
             CreateMap<AddCategoryCommand, Category>();
-
-            CreateMap<AddCategoryResponse, Category>();
-
-            CreateMap<Category, UpdateCategoryResponse>();
-            CreateMap<CategoryDto, UpdateCategoryCommand>();
+            CreateMap<Category, UpdateCategoryResponse>().ReverseMap();
             CreateMap<UpdateCategoryCommand, Category>();
-
-            CreateMap<UpdateCategoryResponse, Category>();
         }
     }
 }

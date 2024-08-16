@@ -55,20 +55,18 @@ namespace Staj.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Post([FromBody] CategoryDto categoryDto)
+        public async Task<IActionResult> Post([FromBody] AddCategoryCommand command)
         {
-            var mappedCategory = _mapper.Map<AddCategoryCommand>(categoryDto);
-            var categoryToAdd = await _mediator.Send(mappedCategory);
-            return Ok(categoryDto);
+            var categoryToAdd = await _mediator.Send(command);
+            return Ok(categoryToAdd);
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(Category), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Put(int id, [FromBody] CategoryDto categoryDto)
+        public async Task<IActionResult> Put(int id, [FromBody] UpdateCategoryCommand command)
         {
-            var mappedCategory = _mapper.Map<UpdateCategoryCommand>(categoryDto);
-            var categoryToUpdate = await _mediator.Send(mappedCategory);
-            return Ok(categoryDto);
+            var categoryToUpdate = await _mediator.Send(command);
+            return Ok(categoryToUpdate);
         }
 
         [HttpDelete("{id}")]
